@@ -8,25 +8,25 @@
             <div class="form__group field">
                 <input class="form__field" type="text" id="name" name="name" placeholder="Nome" v-model="name" require>
                 <label class="edit_label form__label"  for="name">Nome</label>
-                <span class="edit_span"></span>
+                <span class="edit_span">{{this.erroName}}</span>
             </div>
     
             <div class="form__group field">
                 <input class="form__field" type="email" id="email" name="email" placeholder="E-mail" v-model="email" require>
                 <label class="edit_label form__label" for="email">E-mail:</label>
-                <span class="edit_span"></span>
+                <span class="edit_span">{{this.erroEmail}}</span>
             </div>
     
             <div class="form__group field">
                 <input class="form__field" type="text" id="number" name="number" placeholder="(00) 0 00000000" v-model="number" require>
                 <label class="edit_label form__label" for="number">Número:</label>
-                <span class="edit_span"></span>
+                <span class="edit_span">{{this.erroNumber}}</span>
             </div>
     
             <div class="form__group field" id="photo">
                 <input class="form__field" accept="image/*" type="file" name="image" id="image" @change=" onFileSelected" require>
                 <label class="edit_label form__label" for="image">Adicione sua foto</label>
-                <span class="edit_span"></span>
+                <span class="edit_span">{{this.erroImage}}</span>
             </div>
             <button class="button_submit" type="submit">Adicionar</button>
           </form>
@@ -38,32 +38,36 @@
   <script>
   import { createRouter } from 'vue-router'
   import Header from "../components/Header.vue";
-  import Form from "../components/Form.vue";
   
   export default {
     name: "Create",
     components: {
       Header,
-      Form,
     },
     data(){
         return{
             name: '',
             email: '',
             number: '',
-            image: ''
+            image: '',
+            erroName: '',
+            erroEmail: '',
+            erroNumber:'',
+            erroImage:''
+            
         }
     },
     methods: {
         onFileSelected(event) {
             const file = event.target.files[0]
 
-            const formData = new FormData() // criar um novo objeto FormData
+            const formData = new FormData()
             formData.append('image', file)
             this.image = formData.get("image")
 
         },
         async createContact(e){
+            e.preventDefault()
             const formData = new FormData();
             formData.append("name", this.name);
             formData.append("email", this.email);
@@ -77,9 +81,18 @@
                     body: formData,
                 });
                 const responseData = await response.json();
-                console.log(responseData);
-                history.replaceState(null, null, '/')
-                this.$router.replace('/')
+                console.log(responseData.return);
+
+                if(responseData.return === 'Contato salvo!'){
+                    history.replaceState(null, null, '/')
+                    this.$router.replace('/')
+                }
+                
+                this.erroName = responseData.errors.name[0]
+                this.erroEmail = responseData.errors.email[0]
+                this.erroNumber = responseData.errors.number[0]
+                this.erroImage = responseData.errors.image[0]
+
                 
             } catch (error) {
                 console.error(error)
@@ -209,6 +222,11 @@
 .button_submit:hover{
     color: var(--lines-light);
     background-color:var(--main-green-hover);
+}
+
+.edit_span{
+    color: #c92c00;
+    font-size: x-small;
 }
 
  /* Form */

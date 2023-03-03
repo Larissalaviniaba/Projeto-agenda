@@ -27,7 +27,7 @@
                     <label class="edit_label form__label" for="image">Adicione sua foto</label>
                     <span class="edit_span"></span>
                 </div>
-                <button class="button_submit" type="submit">Atualizar</button>
+                <button class="button_submit" type="submit">Editar</button>
               </form>
           </div>
     </div>
@@ -36,13 +36,11 @@
 
 <script>
 import Header from "../components/Header.vue";
-import Form from "../components/Form.vue";
 
 export default{
     name: 'Edit',
     components: {
         Header,
-        Form
     },
     props: {
         selectedContact: {
@@ -78,8 +76,9 @@ export default{
             formData.append("image", this.selectedContact.image);
     
             
-            try {
-
+            try { 
+                ////////////////////////////// TENTATIVA DE REALIZAR O PUT ///////////////////////////////////////
+                // console.log(formData);
                 // const response = await fetch(`http://127.0.0.1:8000/api/contatos/${this.selectedContact.id}`, {
                 //     method: "PUT",
                 //     headers: {'Content-Type': 'application/json'
@@ -88,8 +87,11 @@ export default{
                 // });
                 // const responseData = await response.json();
 
+                // Por algum motivo, que eu não consegui descobrir qual, apesar da Api está realizanddo o PUT normalmente, as informações não chegam para o Back-End e o banco não atualiza.
 
 
+
+                // SIMULAÇÃO DE UM UPDATE 
                 const responseDelete = await fetch(`http://127.0.0.1:8000/api/contatos/${this.selectedContact.id}`,{
                     method: 'DELETE',
                     headers: {
@@ -109,6 +111,7 @@ export default{
             } catch (error) {
                 console.error(error)
             }
+            // Fiz esse código para simular um update pelo fato do PUT não está funcionando como esperado. A nível de esclarecimento estou deixando esses comentários por entender que essa não é uma prática adequada.
         },
     },
 }

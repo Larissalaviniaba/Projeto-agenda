@@ -19,14 +19,12 @@ class ContactController extends Controller
 
     public function create(Request $request){
 
-        // Define as regras de validação dos campos
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:contacts,email',
             'number' => 'required|string|max:20|unique:contacts,number',
         ];
 
-        // Define as mensagens de erro personalizadas
         $messages = [
             'name.required' => 'O campo nome é obrigatório.',
             'name.string' => 'O campo nome deve ser uma string.',
@@ -41,10 +39,8 @@ class ContactController extends Controller
             'number.unique' => 'Este número já existe.',
         ];
 
-        // Executa a validação dos dados da request
         $validator = Validator::make($request->all(), $rules, $messages);
 
-        // Verifica se houve erros na validação
         if ($validator->fails()) {
             return ['return' => 'Erro de validação', 'errors' => $validator->errors()];
         }
@@ -93,6 +89,7 @@ class ContactController extends Controller
     public function update(Request $request, $id){
 
         try {
+
 
             Contact::findOrFail($request->id)->update($request->all());
 
